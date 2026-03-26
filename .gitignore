@@ -1,0 +1,62 @@
+# Backend (Spring / Maven)
+backend/target/
+
+# Frontend (Node)
+frontend/node_modules/
+frontend/build/
+
+# Java
+*.class
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Env files
+.env
+.env.*
+
+# Temp files
+*.tmp
+*.swp
+
+# IDEs
+## VS Code
+.vscode/
+
+## IntelliJ
+.idea
+*.iws
+*.iml
+*.ipr
+
+## STS / Eclipse
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+## NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+#build/
+
+*.jar
+*.war
+
+target/
+
+.env.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
