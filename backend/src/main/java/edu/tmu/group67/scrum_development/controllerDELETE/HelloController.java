@@ -5,7 +5,7 @@
 // on the model), and then returns a response to the view to be displayed to the user. In 
 // this case, the HelloController class is a simple controller that handles GET requests 
 // to the "/hello" endpoint and returns a greeting message.
-package edu.tmu.group67.scrum_development.controller;
+package edu.tmu.group67.scrum_development.controllerDELETE;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
