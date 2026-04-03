@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import edu.tmu.group67.scrum_development.productbacklog.model.entity.BacklogItemEntity;
 import edu.tmu.group67.scrum_development.sprint.model.entity.SprintEntity;
 //import edu.tmu.group67.scrum_development.auth.model.entity.User;
+import edu.tmu.group67.scrum_development.enums.Status;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -53,4 +55,8 @@ public class SprintBacklogItemEntity {
     private LocalDateTime addeddAt = LocalDateTime.now();
 
     // status (enum)
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
 }
