@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import edu.tmu.group67.scrum_development.auth.model.entity.Role;
 
 /*NOTES
 string defaults to varchar(255) in the database, which is usually sufficient for most use cases. If you need a longer string, you can specify the length using the @Column annotation, like this:
@@ -18,9 +17,10 @@ for text type: @Column(columnDefinition = "TEXT", nullable = false)
 @Entity //means it represents a table in the database
 @Table(name = "users") //table name in the database
 @Data //lombok annotation to generate getters, setters, toString, equals, and hashCode methods
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor //lombok annotation to generate a no-argument constructor
+@AllArgsConstructor //lombok annotation to generate a constructor with all fields
 @Builder
+
 public class User {
 
     @Id

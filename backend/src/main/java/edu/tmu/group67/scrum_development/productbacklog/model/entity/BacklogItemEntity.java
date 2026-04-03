@@ -11,6 +11,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
+import edu.tmu.group67.scrum_development.enums.Status;
+import edu.tmu.group67.scrum_development.enums.Level;
+
+
 //means it represents a table in the database
 @Entity
 //table name in the database
@@ -65,6 +70,15 @@ public class BacklogItemEntity {
     @Column(name = "updated_at")
     @Builder.Default
     private LocalDateTime updateddAt = LocalDateTime.now();
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    @Enumerated(EnumType.STRING)
+    private Level priority;
+
+    @Enumerated(EnumType.STRING)
+    private Level risk;
 
     // backlog prior (enum)
     // backlog risk (enum)
