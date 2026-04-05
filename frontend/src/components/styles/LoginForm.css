@@ -1,4 +1,4 @@
-body{
+.login-page{
   background-color: rgba(249, 249, 249);
   font-family: "Open Sans";
   display: flex;
@@ -25,11 +25,11 @@ h2{
   font-size: 16px;
   font-weight: 400;
   color: rgb(113, 113, 130);
-  margin-bottom: 40px;
+  margin-bottom: 30px;
   margin-top: 5px;
 }
 
-p{
+.input-prompt{
   margin: 20px 0px 5px 0px;
   font-family: "Open Sans";
   font-weight: 500;

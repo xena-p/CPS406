@@ -1,0 +1,25 @@
+.dashboard-page{
+  font-family: "Open Sans";
+  background-color: rgb(249, 250, 251);
+  margin: 150px 0px 0px 0px;
+}
+
+p{
+  margin: 0px;
+}
+
+.nav-section{
+  min-width: 400px;
+  margin: 30px 100px;
+}
+
+.content-section{
+  background-color: white;
+  border:none;
+  
+  padding: 0px 100px;
+  display: flex;
+  justify-content: center;
+  min-width: fit-content;
+}
+

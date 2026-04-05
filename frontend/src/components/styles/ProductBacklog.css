@@ -1,0 +1,57 @@
+.prod-log-div{
+  min-height: 500px;
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+
+.prod-log-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px 25px;
+  white-space: nowrap;
+}
+
+.prod-log-title{
+  margin: 0px 50px 0px 0px;
+  font-size: 18px;
+}
+
+.prod-log-name{
+  font-weight: 600
+}
+
+.prod-log-desc{
+  color: gray;
+}
+
+.prod-log-buttons{
+  display: flex;
+}
+
+.add-item-btn,
+.new-sprint-btn{
+  color: white;
+  background-color: black;
+  border: none;
+  padding: 10px 15px 10px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 600;
+  border-radius: 8px;
+  font-size: 13px;
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+.add-item-icon,
+.new-sprint-icon{
+  width: 20px;
+  margin: 0 10px 0 0;
+}
+
+hr{
+  width: 90%;
+}
