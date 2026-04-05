@@ -1,5 +1,20 @@
 import './styles/LoginForm.css'
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+
 function LoginForm(){
+  const navigate = useNavigate();
+  const [ email, setEmail ] = useState("");
+  const [ password, setPassword ] = useState("");
+
+  const handleLogin = () => {
+    if (email === 'dev@example.com' && password === 'password'){
+      navigate('/dashboard');
+    } else {
+      navigate('/dashboard');
+    }
+  };
+
   return(
     <div className="login-page">
       <div className="login-popup">
@@ -12,7 +27,10 @@ function LoginForm(){
         <p className="input-prompt">Password</p>
         <input type="password" className="password" placeholder="Enter your password" />
 
-        <div className="login-btn-div">
+        <div 
+          className="login-btn-div"
+          onClick={handleLogin}
+        >
           <button className="login-btn">Log In</button>
         </div>
       </div>
