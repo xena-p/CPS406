@@ -1,5 +1,3 @@
 package edu.tmu.group67.scrum_development.auth.model.dto;
 
-public class UserDto {
-    
-}
+public record RefreshRequest(String refreshToken) {}

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 
 
 @Entity //means it represents a table in the database
-@Table(name = "users") //table name in the database
+@Table(name = "sprints") //table name in the database
 @Data //lombok annotation to generate getters, setters, toString, equals, and hashCode methods
 @NoArgsConstructor //lombok annotation to generate a no-argument constructor
 @AllArgsConstructor //lombok annotation to generate a constructor with all fields

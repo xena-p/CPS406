@@ -3,6 +3,8 @@ package edu.tmu.group67.scrum_development.auth.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import edu.tmu.group67.scrum_development.auth.model.entity.User;
+import java.util.Optional;
+
 /* Repository interface for User entity, extends JpaRepository to provide CRUD operations like findById, findAll etc and you cna also define custom 
 query methods here if needed. The @Repository annotation indicates that this interface is a Spring Data Repository, which will be automatically 
 implemented by Spring Data JPA at runtime.
@@ -13,5 +15,6 @@ when a User entity has not yet been persisted to the database and therefore does
 */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    
+    Optional<User> findByEmail(String email);
+    Optional<User> findByRefreshToken(String token);
 }
