@@ -22,10 +22,20 @@ function LoginForm(){
         <h2>Sign in to your account to continue</h2>
 
         <p className="input-prompt">Email</p>
-        <input type="email" className="email-input" placeholder="user@example.com" />
+        <input 
+          type="email" 
+          className="email-input" 
+          placeholder="user@example.com" 
+          onChange={(e) => setEmail(e.target.value)}
+        />
         
         <p className="input-prompt">Password</p>
-        <input type="password" className="password" placeholder="Enter your password" />
+        <input 
+          type="password" 
+          className="password" 
+          placeholder="Enter your password" 
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
         <div 
           className="login-btn-div"
