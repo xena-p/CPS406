@@ -48,6 +48,13 @@
   justify-content: center;
   gap: 5px;
   cursor: pointer;
+  transition: background-color 0.15s, color 0.15s
+}
+
+.logout-btn:hover{
+  background-color: rgb(209, 37, 37, 0.8);
+  color: white;
+
 }
 
 .logout-icon{
