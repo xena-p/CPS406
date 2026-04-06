@@ -6,7 +6,7 @@ function DashHeader(){
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    navigate("/home");
+    navigate("/");
   };
 
   return(

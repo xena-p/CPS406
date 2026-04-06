@@ -7,12 +7,14 @@ import DashboardPage from './components/DashboardPage.tsx'
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/home" element={<LoginForm />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
-      </Routes>
-    </BrowserRouter>
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<LoginForm />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
+        </Routes>
+      </BrowserRouter>
+    </>
   )
 }
 
