@@ -38,7 +38,8 @@ public class SprintEntity {
     private int capacity;
 
     @Column(name = "is_approved")
-    private boolean isApproved;
+    @Builder.Default
+    private boolean isApproved=false;
 
 
     @Column(name = "created_at")
