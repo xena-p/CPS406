@@ -56,6 +56,25 @@ hr{
   width: 90%;
 }
 
+.product-backlog-table{
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+table{
+  width: 90%;
+  border-collapse: collapse;
+}
+
+th{
+
+  padding: 10px;
+  border-bottom: 1px solid #444;
+  color: black;
+  font-weight: 500;
+}
 
 
 

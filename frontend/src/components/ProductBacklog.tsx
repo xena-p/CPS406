@@ -1,15 +1,25 @@
 import './styles/ProductBacklog.css'
 import newSprintIcon from '../assets/new-sprint-icon.png'
 import addItemIcon from '../assets/add-item-icon.png'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import AddItemModal from './AddItemModal.tsx'
 import NewSprintModal from "./NewSprintModal.tsx"
 
-
-
 function ProductBacklog(){
+  const [items, setItems] = useState<any[]>([]);
   const [ isNewItemOpen, setIsNewItemOpen ] = useState(false);
   const [ isNewSprintOpen, setIsNewSprintOpen ] = useState(false);
+
+  useEffect(() => {
+    console.log(items);
+  }, [items]);
+
+  function handleAddItems(newItem: any){
+    setItems([
+      ...items,
+      newItem
+    ])
+  }
 
   return(
     <div className="prod-log-div">
@@ -30,13 +40,25 @@ function ProductBacklog(){
           </button>
         </div>
       </div>
-      <hr></hr>
+      
 
-      <div className="prod-log-table">
+      <div className="product-backlog-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Status</th>
+              <th>Priority</th>
+              <th>Estimate</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+        </table>
       </div>
+     
 
       {isNewItemOpen && (
-        <AddItemModal setIsNewItemOpen={setIsNewItemOpen} />
+        <AddItemModal setIsNewItemOpen={setIsNewItemOpen} onAddItem={handleAddItems} />
       )}
 
       {isNewSprintOpen && (
