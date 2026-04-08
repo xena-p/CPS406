@@ -1,6 +1,8 @@
 import './styles/ProductBacklog.css'
 import newSprintIcon from '../assets/new-sprint-icon.png'
 import addItemIcon from '../assets/add-item-icon.png'
+import viewItemIcon from '../assets/view-item-icon.png'
+import deleteItemIcon from '../assets/delete-item-icon.png'
 import { useState, useEffect } from 'react'
 import AddItemModal from './AddItemModal.tsx'
 import NewSprintModal from "./NewSprintModal.tsx"
@@ -14,11 +16,15 @@ function ProductBacklog(){
     console.log(items);
   }, [items]);
 
-  function handleAddItems(newItem: any){
+  function handleAddItem(newItem: any){
     setItems([
       ...items,
       newItem
     ])
+  }
+
+  function handleDeleteItem(id: string){
+    setItems(items.filter(item => item.id !== id))
   }
 
   return(
@@ -41,7 +47,6 @@ function ProductBacklog(){
         </div>
       </div>
       
-
       <div className="product-backlog-table">
         <table>
           <thead>
@@ -52,13 +57,43 @@ function ProductBacklog(){
               <th>Estimate</th>
               <th>Actions</th>
             </tr>
-          </thead>
+          </thead>        
+          <tbody>
+            {items.length === 0 ? (
+              <tr>
+                <td colSpan={5}>
+                  <p>No items in the product backlog.</p>
+                </td>
+              </tr>
+            ) : (
+              items.map((item) => (
+                <tr key={item.id}>
+                  <td className="item-title-cell">{item.title}</td>
+                  <td>{item.status}</td>
+                  <td>{item.priority}</td>
+                  <td>{item.estimate} hrs</td>
+                  <td>
+                    <div className="actions-div">
+                      <button id="view-item-btn">
+                        <img id="view-item-icon" src={viewItemIcon}></img>
+                      </button>
+                      <button 
+                        id="delete-item-btn"
+                        onClick={() => handleDeleteItem(item.id)}
+                      >
+                        <img id="delete-item-icon" src={deleteItemIcon}></img>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
         </table>
       </div>
-     
 
       {isNewItemOpen && (
-        <AddItemModal setIsNewItemOpen={setIsNewItemOpen} onAddItem={handleAddItems} />
+        <AddItemModal setIsNewItemOpen={setIsNewItemOpen} onAddItem={handleAddItem} />
       )}
 
       {isNewSprintOpen && (

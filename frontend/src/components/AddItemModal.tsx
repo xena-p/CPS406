@@ -13,10 +13,10 @@ function AddItemModal({ setIsNewItemOpen, onAddItem }: AddItemModalProps){
   const [estimate, setEstimate] = useState(0);
   const [priority, setPriority] = useState("medium");
   const [risk, setRisk] = useState(0);
-  const status = "Planned"
+  const status = "Pending"
 
   function handleConfirmAdd(){
-    const newItem = {title, status, requirements, story, priority, estimate, risk}
+    const newItem = {id: crypto.randomUUID(), title, status, requirements, story, priority, estimate, risk}
     onAddItem(newItem);
     setIsNewItemOpen(false);
   }

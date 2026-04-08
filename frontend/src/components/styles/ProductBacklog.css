@@ -64,17 +64,61 @@ hr{
 }
 
 table{
-  width: 90%;
+  width: 95%;
   border-collapse: collapse;
 }
 
 th{
-
   padding: 10px;
   border-bottom: 1px solid #444;
   color: black;
   font-weight: 500;
 }
+
+td{
+  text-align: center;
+  border-bottom: 1px solid rgb(173, 173, 173);
+  padding: 10px 0px;
+  max-width: 300px;
+  
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+}
+
+.item-title-cell{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 10px;
+}
+
+.actions-div{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+#delete-item-btn,
+#view-item-btn{
+  background-color: transparent;
+  border: none;
+  padding: 5px;
+}
+
+#view-item-icon{
+  height: 15px;
+}
+
+#delete-item-icon{
+  height: 25px;
+}
+
+
+
+
+
+
 
 
 
