@@ -1,8 +1,16 @@
 import './styles/ProductBacklog.css'
 import newSprintIcon from '../assets/new-sprint-icon.png'
 import addItemIcon from '../assets/add-item-icon.png'
+import { useState } from 'react'
+import AddItemModal from './AddItemModal.tsx'
+import NewSprintModal from "./NewSprintModal.tsx"
+
+
 
 function ProductBacklog(){
+  const [ isNewItemOpen, setIsNewItemOpen ] = useState(false);
+  const [ isNewSprintOpen, setIsNewSprintOpen ] = useState(false);
+
   return(
     <div className="prod-log-div">
       <div className="prod-log-header">
@@ -12,11 +20,11 @@ function ProductBacklog(){
         </div>
 
         <div className="prod-log-buttons">
-          <button className="new-sprint-btn">
+          <button onClick={() => setIsNewSprintOpen(true)}className="new-sprint-btn">
             <img className="new-sprint-icon" src={newSprintIcon} />
             Start a New Sprint
           </button>
-          <button className="add-item-btn"> 
+          <button onClick={() => setIsNewItemOpen(true)}className="add-item-btn"> 
             <img className="add-item-icon" src={addItemIcon} />
             Add Item
           </button>
@@ -26,6 +34,14 @@ function ProductBacklog(){
 
       <div className="prod-log-table">
       </div>
+
+      {isNewItemOpen && (
+        <AddItemModal setIsNewItemOpen={setIsNewItemOpen} />
+      )}
+
+      {isNewSprintOpen && (
+        <NewSprintModal setIsNewSprintOpen={setIsNewSprintOpen} />
+      )}
     </div>
   );
 }

@@ -35,7 +35,8 @@ h2{
   font-weight: 500;
 }
 
-input{
+.email-input,
+.password-input{
   font-size: 18px;
   font-family: "Open Sans";
   border-radius: 5px;

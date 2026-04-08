@@ -32,7 +32,7 @@ function LoginForm(){
         <p className="input-prompt">Password</p>
         <input 
           type="password" 
-          className="password" 
+          className="password-input" 
           placeholder="Enter your password" 
           onChange={(e) => setPassword(e.target.value)}
         />
