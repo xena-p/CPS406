@@ -1,0 +1,66 @@
+.overlay{
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.view-item-modal{
+  position: fixed;
+  z-index: 101;
+  border-radius: 10px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 30px;
+  width: 500px;
+}
+
+
+.view-item-header{
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  align-items: start;
+  
+}
+
+.modal-title{
+  display: inline-block;
+}
+
+.close-view-button{
+  display: inline-block;
+  background-color: transparent;
+  border: none;
+  font-size: 19px;
+  font-weight: 700;
+  margin-right: -15px;
+  margin-top: -5px;
+}
+
+.view-property-text{
+  margin-top: 10px;
+  font-weight: 600;
+  font-size: 17px;
+  margin-bottom: 5px;
+}
+
+.view-property-content{
+  overflow-wrap: break-word;
+}
+
+.dropdown-properties-div{
+  display: flex;
+  margin-top: 10px;
+  gap: 20px;
+}
+
+.view-dropdown-property{
+  flex: 1;
+}
+
+

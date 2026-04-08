@@ -6,11 +6,14 @@ import deleteItemIcon from '../assets/delete-item-icon.png'
 import { useState, useEffect } from 'react'
 import AddItemModal from './AddItemModal.tsx'
 import NewSprintModal from "./NewSprintModal.tsx"
+import ViewItemModal from './ViewItemModal.tsx'
 
 function ProductBacklog(){
   const [items, setItems] = useState<any[]>([]);
   const [ isNewItemOpen, setIsNewItemOpen ] = useState(false);
   const [ isNewSprintOpen, setIsNewSprintOpen ] = useState(false);
+  const [ isViewItemOpen, setIsViewItemOpen ] = useState(false);
+  const [ selectedItem, setSelectedItem ] = useState<any>(null);
 
   useEffect(() => {
     console.log(items);
@@ -74,7 +77,10 @@ function ProductBacklog(){
                   <td>{item.estimate} hrs</td>
                   <td>
                     <div className="actions-div">
-                      <button id="view-item-btn">
+                      <button 
+                        id="view-item-btn"
+                        onClick={() => { setSelectedItem(item); setIsViewItemOpen(true); }}
+                      >
                         <img id="view-item-icon" src={viewItemIcon}></img>
                       </button>
                       <button 
@@ -98,6 +104,10 @@ function ProductBacklog(){
 
       {isNewSprintOpen && (
         <NewSprintModal setIsNewSprintOpen={setIsNewSprintOpen} />
+      )}
+
+      {isViewItemOpen && (
+        <ViewItemModal setIsViewItemOpen={setIsViewItemOpen} item={selectedItem}/>
       )}
     </div>
   );
