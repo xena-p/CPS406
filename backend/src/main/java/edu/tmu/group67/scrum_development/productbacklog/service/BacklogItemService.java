@@ -40,7 +40,7 @@ public class BacklogItemService {
     // 3. SAVE
     await db.users.save(user); 
     */
-    BacklogItemEntity existingItem=backlogItemRepository.findById(id).orElseThrow(null));
+    BacklogItemEntity existingItem=backlogItemRepository.findById(id).orElseThrow(null);
     //setting
 
     //text data
