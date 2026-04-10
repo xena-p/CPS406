@@ -8,5 +8,6 @@ import edu.tmu.group67.scrum_development.sprintbacklog.model.entity.SprintBacklo
 
 @Repository
 public interface SprintBacklogItemRepository extends JpaRepository<SprintBacklogItemEntity, Long> {
-    List<SprintBacklogItemEntity> findBySprintId(Long sprintId);
+    // sprintId field in the entity is a SprintEntity (ManyToOne), so we traverse to its id
+    List<SprintBacklogItemEntity> findBySprintId_Id(Long sprintId);
 }

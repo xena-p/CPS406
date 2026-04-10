@@ -60,7 +60,7 @@ public class SprintService {
          if (customerIN==true){
             //find all backlog items + lock all backlog items
             approveSprint(sprintId);
-            List<SprintBacklogItemEntity> sprintItems=sprintBacklogRepository.findBySprintId(sprintId);
+            List<SprintBacklogItemEntity> sprintItems=sprintBacklogRepository.findBySprintId_Id(sprintId);
 
             for(SprintBacklogItemEntity item : sprintItems){
                 item.setLocked(true);

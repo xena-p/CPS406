@@ -1,25 +1,23 @@
-import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../AuthContext';
 import logoutIcon from '../assets/logout-icon.webp'
 import './styles/DashHeader.css'
 
 function DashHeader(){
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    navigate("/");
-  };
+  const { user, logout } = useAuth();
 
   return(
     <div className="header">
       <div className="title">
         <h1 className="project-name">Scrum Project Manager</h1>
-        <h2 className="welcome-text">Welcome, dev@example.com (Developer)</h2>
+        <h2 className="welcome-text">
+          Welcome, {user?.email} ({user?.role})
+        </h2>
       </div>
-      <button 
+      <button
         className="logout-btn"
-        onClick={handleLogout}
-      > 
-        <img src={logoutIcon} className="logout-icon" /> 
+        onClick={logout}
+      >
+        <img src={logoutIcon} className="logout-icon" />
         Logout
       </button>
     </div>
