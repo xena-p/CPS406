@@ -119,6 +119,8 @@ Client account
 username: client@example.com
 password:client123
 ```
+---
+<sub>Made for CPS406.</sub>
 
+<sub>Team 25: Angela Hanasan, Emaan Iqbal, Aerin Maredia, Xena Patel, Ayesha Rashid.</sub>
 
-```
