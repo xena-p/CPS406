@@ -69,7 +69,7 @@ public class BacklogItemEntity {
     // backlog UPdated @ 
     @Column(name = "updated_at")
     @Builder.Default
-    private LocalDateTime updateddAt = LocalDateTime.now();
+    private LocalDateTime updatedAt = LocalDateTime.now();
 
     @Enumerated(EnumType.STRING)
     private Status status;
@@ -79,6 +79,8 @@ public class BacklogItemEntity {
 
     @Enumerated(EnumType.STRING)
     private Level risk;
+
+    
 
     // backlog prior (enum)
     // backlog risk (enum)

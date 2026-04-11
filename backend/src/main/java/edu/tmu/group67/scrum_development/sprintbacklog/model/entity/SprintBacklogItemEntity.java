@@ -30,7 +30,7 @@ public class SprintBacklogItemEntity {
     // sprint_id (big int) -> relation
     @ManyToOne (fetch=FetchType.LAZY)
     @JoinColumn (name="sprint_id")
-    private SprintEntity sprintId;
+    private SprintEntity sprint;
 
     // backlog_item_id (big int) -> relation
     @ManyToOne (fetch=FetchType.LAZY)

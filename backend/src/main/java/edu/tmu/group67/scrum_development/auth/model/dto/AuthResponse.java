@@ -1,5 +1,5 @@
 package edu.tmu.group67.scrum_development.auth.model.dto;
-
+//change to record
 import lombok.Builder;
 import lombok.Data;
 

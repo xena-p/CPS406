@@ -9,4 +9,6 @@ import edu.tmu.group67.scrum_development.sprintbacklog.model.entity.SprintBacklo
 @Repository
 public interface SprintBacklogItemRepository extends JpaRepository<SprintBacklogItemEntity, Long> {
     List<SprintBacklogItemEntity> findBySprintId(Long sprintId);
+        boolean existsBySprintIdAndBacklogItemId_Id(Long sprintId, Long backlogItemId);
 }
+
