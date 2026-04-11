@@ -132,9 +132,16 @@ function SprintView() {
       setTasksLoading(true);
       try {
         const res = await apiFetch(`/tasks/item/${itemId}`);
-        if (res.ok) setTasks(prev => ({ ...prev, [itemId]: await res.json() }));
-      } finally {
-        setTasksLoading(false);
+        
+        if (res.ok) {
+        const data = await res.json(); 
+        
+        setTasks(prev => ({ ...prev, [itemId]: data }));
+      }
+    } catch (err) {
+      setTaskError('Failed to load tasks');
+    } finally {
+      setTasksLoading(false);
       }
     }
   }
