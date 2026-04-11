@@ -4,7 +4,7 @@ This is the executable steps for demoing sprint 2.
 
 ---
 
-## Installing dependecies
+## Installing dependecies - Windows Machine
 
 **Java version 21 is required for this project to run.**
 
@@ -31,10 +31,29 @@ To install **frontend** dependecies
 cd CPS406
 cd frontend
 npm install
+```
 
 To install **backend** dependecies
 ```bash
 cd CPS406
 cd backend
 mvnw.cmd spring-boot:run
-.\mvnw clean spring-boot:run
+```
+---
+# Running the project.
+---
+
+In **command prompt** backend is up and running:
+```bash
+cd CPS406
+cd backend
+mvnw.cmd clean spring-boot:run
+```
+
+Next, in front end run the following.
+```bash
+cd CPS406
+cd frontend
+npm run dev
+```
+hold the CTRL key and click onto the local link
