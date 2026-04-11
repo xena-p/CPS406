@@ -5,74 +5,66 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import edu.tmu.group67.scrum_development.enums.Status;
 import edu.tmu.group67.scrum_development.productbacklog.model.entity.BacklogItemEntity;
 import edu.tmu.group67.scrum_development.productbacklog.repository.BacklogItemRepository;
+import edu.tmu.group67.scrum_development.sprintbacklog.repository.SprintBacklogItemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.NonNull;
 
 @Service
 @RequiredArgsConstructor
 public class BacklogItemService {
-// fxns for prod backlog
-// helpful docs: 
-// https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/repository/CrudRepository.html
 
-
-    //set up the repo needed for the services
     private final BacklogItemRepository backlogItemRepository;
+    private final SprintBacklogItemRepository sprintBacklogItemRepository;
 
-    //createBacklogItem (title, description, priority, effort, createdBy) - c
     public BacklogItemEntity createBacklogItem(@NonNull BacklogItemEntity item){
-        // @NonNull to prevent null entries.
-            // pass entity so ctrl can get json for frontend
         return backlogItemRepository.save(item);
     }
 
-    //updateBacklogItem (id, fieldsToUpdate)
-    public BacklogItemEntity updateBacklogItem (@NonNull Long id,@NonNull BacklogItemEntity updatedItem){
-    /*example implementation
-    https://www.baeldung.com/spring-data-jpa-refresh-fetch-entity-after-save
-    // 1. FETCH
-    const user = await db.users.findById(id);
-    // 2. MAP (Merge)
-    // incomingData = { "email": "new@example.com" }
-    Object.assign(user, incomingData);
-    // 3. SAVE
-    await db.users.save(user); 
-    */
-    BacklogItemEntity existingItem=backlogItemRepository.findById(id).orElseThrow(null);
-    //setting
+    public BacklogItemEntity updateBacklogItem(@NonNull Long id, @NonNull BacklogItemEntity updatedItem){
+        BacklogItemEntity existingItem = backlogItemRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Backlog item not found with id: " + id));
 
-    //text data
-    existingItem.setTitle(updatedItem.getTitle());
-    existingItem.setRequirements(updatedItem.getRequirements());
-    existingItem.setStory(updatedItem.getStory());
-    //num data
-    existingItem.setEffort(updatedItem.getEffort());
-    existingItem.setPriority(updatedItem.getPriority());
-    existingItem.setStatus(updatedItem.getStatus());
-    existingItem.setRisk(updatedItem.getRisk());
+        if (existingItem.getStatus() != Status.PLANNED) {
+            throw new RuntimeException("Only PLANNED items can be modified");
+        }
 
-    // time of edit
-    existingItem.setUpdateddAt(LocalDateTime.now());
-    //save
-    return backlogItemRepository.save(existingItem);
+        existingItem.setTitle(updatedItem.getTitle());
+        existingItem.setRequirements(updatedItem.getRequirements());
+        existingItem.setStory(updatedItem.getStory());
+        existingItem.setEffort(updatedItem.getEffort());
+        existingItem.setPriority(updatedItem.getPriority());
+        existingItem.setStatus(updatedItem.getStatus());
+        existingItem.setRisk(updatedItem.getRisk());
+        existingItem.setUpdateddAt(LocalDateTime.now());
+
+        return backlogItemRepository.save(existingItem);
     }
 
-    //deleteBacklogItem (id) - returns none
-    public void deleteBacklogItem (@NonNull Long id){
-        // built in del by id 
+    public void deleteBacklogItem(@NonNull Long id){
+        BacklogItemEntity item = backlogItemRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Backlog item not found with id: " + id));
+
+        if (item.getStatus() != Status.PLANNED) {
+            throw new RuntimeException("Only PLANNED items can be deleted");
+        }
+
+        // Remove any sprint backlog references before deleting
+        sprintBacklogItemRepository.deleteAll(
+            sprintBacklogItemRepository.findByBacklogItemId_Id(id)
+        );
+
         backlogItemRepository.deleteById(id);
     }
 
-    //retrive backlog itm (singular)
-    public BacklogItemEntity getBacklogItem (@NonNull Long id){
-        return backlogItemRepository.findById(id).orElseThrow(null);
+    public BacklogItemEntity getBacklogItem(@NonNull Long id){
+        return backlogItemRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Backlog item not found with id: " + id));
     }
 
-    //getAllBacklogItems ()
-    public List<BacklogItemEntity> getAllBacklogItems (){
+    public List<BacklogItemEntity> getAllBacklogItems(){
         return backlogItemRepository.findAll();
     }
-    
 }

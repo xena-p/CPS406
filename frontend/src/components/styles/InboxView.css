@@ -1,0 +1,235 @@
+.inbox-view {
+  display: flex;
+  gap: 20px;
+  height: 100%;
+  min-height: 0;
+}
+
+/* ── Left panel ── */
+.inbox-list-panel {
+  width: 280px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.inbox-list-header h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.inbox-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inbox-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+
+.inbox-card:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  border-color: #d1d5db;
+}
+
+.inbox-card-active {
+  border-color: black;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+.inbox-card-name {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.inbox-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.inbox-capacity {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* ── Status badge ── */
+.inbox-status-badge {
+  display: inline-block;
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* ── Right panel ── */
+.inbox-detail-panel {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.inbox-detail-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+.inbox-detail-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.inbox-detail-header h2 {
+  margin: 0 0 6px 0;
+  font-size: 20px;
+}
+
+.inbox-detail-meta {
+  color: #4b5563;
+  font-size: 13px;
+  margin: 0;
+}
+
+/* ── Approve / Reject buttons ── */
+.inbox-actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.inbox-approve-btn {
+  background-color: #10b981;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: "Open Sans", sans-serif;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.inbox-approve-btn:hover:not(:disabled) {
+  background-color: #059669;
+}
+
+.inbox-approve-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.inbox-reject-btn {
+  background-color: white;
+  color: #ef4444;
+  border: 1px solid #ef4444;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: "Open Sans", sans-serif;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.inbox-reject-btn:hover:not(:disabled) {
+  background-color: #fef2f2;
+}
+
+.inbox-reject-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Feedback message ── */
+.inbox-message {
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.inbox-message-success {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.inbox-message-error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* ── Items table ── */
+.inbox-items-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.inbox-items-table th {
+  text-align: left;
+  padding: 10px 14px;
+  background: #f9fafb;
+  font-size: 13px;
+  color: #374151;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.inbox-items-table td {
+  padding: 10px 14px;
+  font-size: 14px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.inbox-items-table tr:last-child td {
+  border-bottom: none;
+}
+
+.cell-center {
+  text-align: center;
+}
+
+.item-status {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.item-status-planned    { background: #fef3c7; color: #92400e; }
+.item-status-active     { background: #d1fae5; color: #065f46; }
+.item-status-in_progress{ background: #dbeafe; color: #1e40af; }
+.item-status-done       { background: #f3f4f6; color: #374151; }
+
+.inbox-loading,
+.inbox-empty {
+  color: #9ca3af;
+  font-size: 14px;
+  margin: 0;
+}

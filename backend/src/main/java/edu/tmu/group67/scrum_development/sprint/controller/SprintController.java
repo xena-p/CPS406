@@ -4,6 +4,8 @@ import edu.tmu.group67.scrum_development.enums.Status;
 import edu.tmu.group67.scrum_development.sprint.model.dto.SprintDto;
 import edu.tmu.group67.scrum_development.sprint.model.entity.SprintEntity;
 import edu.tmu.group67.scrum_development.sprint.service.SprintService;
+import edu.tmu.group67.scrum_development.sprintbacklog.model.dto.SprintBacklogItemDto;
+import edu.tmu.group67.scrum_development.sprintbacklog.model.entity.SprintBacklogItemEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +20,7 @@ public class SprintController {
 
     private final SprintService sprintService;
 
-    // GET /sprint
+    // GET /sprint — all sprints
     @GetMapping
     public ResponseEntity<List<SprintDto>> getAllSprints() {
         return ResponseEntity.ok(
@@ -32,41 +34,55 @@ public class SprintController {
                 sprintService.getSprints(status).stream().map(this::toDto).collect(Collectors.toList()));
     }
 
-    // POST /sprint
+    // POST /sprint — create a new sprint proposal
     @PostMapping
-    public ResponseEntity<SprintDto> createSprint(@RequestBody SprintDto dto) {
-        SprintEntity created = sprintService.createSprint(dto.getName(), dto.getStartDate(), dto.getEndDate());
-        return ResponseEntity.ok(toDto(created));
+    public ResponseEntity<?> createSprint(@RequestBody SprintDto dto) {
+        try {
+            SprintEntity created = sprintService.createSprint(
+                    dto.getName(), dto.getStartDate(), dto.getEndDate(), dto.getCapacity());
+            return ResponseEntity.ok(toDto(created));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(409).body(e.getMessage());
+        }
     }
 
-    // PUT /sprint/{id}/submit - developer submits proposal for customer review
-    @PutMapping("/{id}/submit")
-    public ResponseEntity<SprintDto> submitProposal(@PathVariable Long id) {
-        return ResponseEntity.ok(toDto(sprintService.submitSprintProposalForApproval(id)));
+    // POST /sprint/{id}/generate — auto-generate sprint backlog items from highest-priority PLANNED items
+    @PostMapping("/{id}/generate")
+    public ResponseEntity<List<SprintBacklogItemDto>> generateProposal(@PathVariable Long id) {
+        List<SprintBacklogItemDto> items = sprintService.generateSprintProposal(id)
+                .stream()
+                .map(this::toSprintBacklogDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(items);
     }
 
-    // PUT /sprint/{id}/process?customerId=1&approved=true - customer rep approves or rejects
+    // PUT /sprint/{id}/process?approved=true — customer rep approves or rejects
     @PutMapping("/{id}/process")
-    public ResponseEntity<SprintDto> processProposal(
+    public ResponseEntity<?> processProposal(
             @PathVariable Long id,
-            @RequestParam Long customerId,
             @RequestParam boolean approved) {
-        return ResponseEntity.ok(toDto(sprintService.processSprintProposal(id, customerId, approved)));
-    }
-
-    // PUT /sprint/{id}/start
-    @PutMapping("/{id}/start")
-    public ResponseEntity<SprintDto> startSprint(@PathVariable Long id) {
-        return ResponseEntity.ok(toDto(sprintService.startSprint(id)));
+        try {
+            SprintEntity result = sprintService.processSprintProposal(id, approved);
+            if (result == null) {
+                return ResponseEntity.ok("Sprint rejected and removed.");
+            }
+            return ResponseEntity.ok(toDto(result));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(409).body(e.getMessage());
+        }
     }
 
     // PUT /sprint/{id}/complete
     @PutMapping("/{id}/complete")
-    public ResponseEntity<SprintDto> completeSprint(@PathVariable Long id) {
-        return ResponseEntity.ok(toDto(sprintService.completeSprint(id)));
+    public ResponseEntity<?> completeSprint(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(toDto(sprintService.completeSprint(id)));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(409).body(e.getMessage());
+        }
     }
 
-    // --- Mapping helper ---
+    // --- Mapping helpers ---
 
     private SprintDto toDto(SprintEntity e) {
         return SprintDto.builder()
@@ -78,6 +94,22 @@ public class SprintController {
                 .capacity(e.getCapacity())
                 .approved(e.isApproved())
                 .createdAt(e.getCreatedAt())
+                .build();
+    }
+
+    private SprintBacklogItemDto toSprintBacklogDto(SprintBacklogItemEntity e) {
+        return SprintBacklogItemDto.builder()
+                .id(e.getId())
+                .sprintId(e.getSprintId().getId())
+                .backlogItemId(e.getBacklogItemId().getId())
+                .backlogItemTitle(e.getBacklogItemId().getTitle())
+                .backlogItemPriority(e.getBacklogItemId().getPriority() != null
+                        ? e.getBacklogItemId().getPriority().name() : null)
+                .backlogItemEffort(e.getBacklogItemId().getEffort())
+                .plannedEffort(e.getPlannedEffort())
+                .actualEffort(e.getActualEffort())
+                .locked(e.isLocked())
+                .status(e.getStatus())
                 .build();
     }
 }

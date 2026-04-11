@@ -1,12 +1,12 @@
 package edu.tmu.group67.scrum_development.productbacklog.controller;
 
 import edu.tmu.group67.scrum_development.auth.model.entity.User;
-import edu.tmu.group67.scrum_development.auth.repository.UserRepository;
 import edu.tmu.group67.scrum_development.productbacklog.model.dto.BacklogItemDto;
 import edu.tmu.group67.scrum_development.productbacklog.model.entity.BacklogItemEntity;
 import edu.tmu.group67.scrum_development.productbacklog.service.BacklogItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 public class BacklogItemController {
 
     private final BacklogItemService backlogItemService;
-    private final UserRepository userRepository;
 
     // GET /backlog
     @GetMapping
@@ -36,27 +35,35 @@ public class BacklogItemController {
         return ResponseEntity.ok(toDto(backlogItemService.getBacklogItem(id)));
     }
 
-    // POST /backlog
+    // POST /backlog — createdBy is taken from the JWT, not the request body
     @PostMapping
-    public ResponseEntity<BacklogItemDto> createItem(@RequestBody BacklogItemDto dto) {
-        User createdBy = userRepository.findById(dto.getCreatedById()).orElseThrow(null);
-        BacklogItemEntity saved = backlogItemService.createBacklogItem(toEntity(dto, createdBy));
+    public ResponseEntity<BacklogItemDto> createItem(
+            @RequestBody BacklogItemDto dto,
+            @AuthenticationPrincipal User currentUser) {
+        BacklogItemEntity saved = backlogItemService.createBacklogItem(toEntity(dto, currentUser));
         return ResponseEntity.ok(toDto(saved));
     }
 
     // PUT /backlog/{id}
     @PutMapping("/{id}")
-    public ResponseEntity<BacklogItemDto> updateItem(@PathVariable Long id, @RequestBody BacklogItemDto dto) {
-        User createdBy = userRepository.findById(dto.getCreatedById()).orElseThrow(null);
-        BacklogItemEntity updated = backlogItemService.updateBacklogItem(id, toEntity(dto, createdBy));
-        return ResponseEntity.ok(toDto(updated));
+    public ResponseEntity<?> updateItem(@PathVariable Long id, @RequestBody BacklogItemDto dto) {
+        try {
+            BacklogItemEntity updated = backlogItemService.updateBacklogItem(id, toEntity(dto, null));
+            return ResponseEntity.ok(toDto(updated));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(409).body(e.getMessage());
+        }
     }
 
     // DELETE /backlog/{id}
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteItem(@PathVariable Long id) {
-        backlogItemService.deleteBacklogItem(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteItem(@PathVariable Long id) {
+        try {
+            backlogItemService.deleteBacklogItem(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(409).body(e.getMessage());
+        }
     }
 
     // --- Mapping helpers ---

@@ -1,24 +1,58 @@
 import './styles/AddItemModal.css'
 import { useState } from 'react';
+import { apiFetch } from '../api';
 
 type AddItemModalProps = {
   setIsNewItemOpen: (value: boolean) => void;
-  onAddItem: (item: any) => void;
+  onItemAdded: () => void;
 }
 
-function AddItemModal({ setIsNewItemOpen, onAddItem }: AddItemModalProps){
+function AddItemModal({ setIsNewItemOpen, onItemAdded }: AddItemModalProps){
   const [title, setTitle] = useState("");
   const [requirements, setRequirements] = useState("");
   const [story, setStory] = useState("");
-  const [estimate, setEstimate] = useState(0);
-  const [priority, setPriority] = useState("medium");
-  const [risk, setRisk] = useState(0);
-  const status = "Pending"
+  const [effort, setEffort] = useState(0);
+  const [priority, setPriority] = useState("MEDIUM");
+  const [risk, setRisk] = useState("LOW");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  function handleConfirmAdd(){
-    const newItem = {id: crypto.randomUUID(), title, status, requirements, story, priority, estimate, risk}
-    onAddItem(newItem);
-    setIsNewItemOpen(false);
+  async function handleConfirmAdd(){
+    if (!title.trim() || !requirements.trim()) {
+      setError("Title and Requirements are required.");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const res = await apiFetch('/backlog', {
+        method: 'POST',
+        body: JSON.stringify({
+          title,
+          requirements,
+          story,
+          effort,
+          priority,
+          risk,
+          status: 'PLANNED',
+        }),
+      });
+
+      if (!res.ok) {
+        const msg = await res.text();
+        setError(msg || 'Failed to add item.');
+        return;
+      }
+
+      onItemAdded();
+      setIsNewItemOpen(false);
+    } catch {
+      setError('Network error. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   }
 
   return(
@@ -27,7 +61,7 @@ function AddItemModal({ setIsNewItemOpen, onAddItem }: AddItemModalProps){
         <h1 className="modal-title">Add New Backlog Item</h1>
 
         <p className="property-prompt">Title*</p>
-        <input 
+        <input
           id="title-input"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
@@ -35,10 +69,10 @@ function AddItemModal({ setIsNewItemOpen, onAddItem }: AddItemModalProps){
           placeholder="New Backlog Item (50 characters max)"/>
 
         <p className="property-prompt">Status</p>
-        <button id="status-input">Planned</button>
+        <button id="status-input" disabled>Planned</button>
 
-        <p className="property-prompt">Requirements</p>
-        <textarea 
+        <p className="property-prompt">Requirements*</p>
+        <textarea
           id="requirements-input"
           value={requirements}
           onChange={(e) => setRequirements(e.target.value)}
@@ -46,7 +80,7 @@ function AddItemModal({ setIsNewItemOpen, onAddItem }: AddItemModalProps){
           placeholder="Describe the requirements (300 characters max)"/>
 
         <p className="property-prompt">Story</p>
-        <textarea 
+        <textarea
           id="story-input"
           value={story}
           onChange={(e) => setStory(e.target.value)}
@@ -56,24 +90,23 @@ function AddItemModal({ setIsNewItemOpen, onAddItem }: AddItemModalProps){
         <div className="dropdown-properties-div">
           <div className="priority-property">
             <p className="priority-input-text">Priority</p>
-
-            <select 
-              value={priority} 
+            <select
+              value={priority}
               onChange={e => setPriority(e.target.value)}
               id="priority-input"
             >
-              <option value="low">Low</option>
-              <option value="medium">Medium</option>
-              <option value="high">High</option>
+              <option value="LOW">Low</option>
+              <option value="MEDIUM">Medium</option>
+              <option value="HIGH">High</option>
             </select>
           </div>
 
           <div className="estimate-property">
-            <p className="estimate-input-text">Estimate</p>
-            <input 
+            <p className="estimate-input-text">Estimate (hrs)</p>
+            <input
               type="number"
-              value={estimate}
-              onChange={(e) => setEstimate(Number(e.target.value))} 
+              value={effort}
+              onChange={(e) => setEffort(Number(e.target.value))}
               id="estimate-input"
               placeholder="0"
               min="0"/>
@@ -81,26 +114,31 @@ function AddItemModal({ setIsNewItemOpen, onAddItem }: AddItemModalProps){
 
           <div className="risk-property">
             <p className="risk-input-text">Risk</p>
-            <input 
-              type="number" 
+            <select
               value={risk}
-              onChange={(e) => setRisk(Number(e.target.value))}
+              onChange={e => setRisk(e.target.value)}
               id="risk-input"
-              placeholder="0"/>
+            >
+              <option value="LOW">Low</option>
+              <option value="MEDIUM">Medium</option>
+              <option value="HIGH">High</option>
+            </select>
           </div>
-          
         </div>
-        
+
+        {error && <p className="error-text">{error}</p>}
+
         <div className="add-item-options">
-          <button 
+          <button
             id="cancel-add-item-btn"
             onClick={() => setIsNewItemOpen(false)}
           >Cancel</button>
 
-            <button 
+          <button
             id="confirm-add-item-btn"
             onClick={handleConfirmAdd}
-          >Add Item</button>
+            disabled={loading}
+          >{loading ? 'Adding...' : 'Add Item'}</button>
         </div>
       </div>
     </div>

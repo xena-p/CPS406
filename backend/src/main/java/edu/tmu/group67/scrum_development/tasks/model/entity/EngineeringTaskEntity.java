@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import edu.tmu.group67.scrum_development.enums.Status;
-import edu.tmu.group67.scrum_development.sprint.model.entity.SprintEntity;
+import edu.tmu.group67.scrum_development.sprintbacklog.model.entity.SprintBacklogItemEntity;
 import edu.tmu.group67.scrum_development.auth.model.entity.User;
 
 
@@ -28,7 +28,7 @@ public class EngineeringTaskEntity {
     //sprint backlog item id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sprint_backlog_item_id", nullable = false)
-    private SprintEntity sprintBacklogItem;
+    private SprintBacklogItemEntity sprintBacklogItem;
 
     private String title;
     @Column(columnDefinition = "TEXT", nullable = false)

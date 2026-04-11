@@ -4,6 +4,8 @@ import edu.tmu.group67.scrum_development.auth.model.dto.*;
 import edu.tmu.group67.scrum_development.auth.service.UserService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -14,19 +16,27 @@ public class UserController {
 
     private final UserService service;
 
-    // @PostMapping("/register")
-    // public AuthResponse register(@RequestBody RegisterRequest request) {
-    //     return service.register(request);
-    // }
-
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody AuthRequest request) {
-        return service.login(request);
+    public ResponseEntity<?> login(@RequestBody AuthRequest request) {
+        try {
+            return ResponseEntity.ok(service.login(request));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(401).body(e.getMessage());
+        }
+    }
+
+    // TEMPORARY — delete after use
+    @GetMapping("/hash")
+    public String hash(@RequestParam String pw) {
+        return new BCryptPasswordEncoder().encode(pw);
     }
 
     @PostMapping("/refresh")
-    public AuthResponse refresh(@RequestBody RefreshRequest request) {
-        // Access the token using the record's accessor method: request.refreshToken()
-        return service.refresh(request.refreshToken());
+    public ResponseEntity<?> refresh(@RequestBody RefreshRequest request) {
+        try {
+            return ResponseEntity.ok(service.refresh(request.refreshToken()));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(401).body(e.getMessage());
+        }
     }
 }

@@ -27,3 +27,7 @@ button{
 .nav-tab:active{
   background-color: white;
 }
+
+.nav-tab-active{
+  background-color: white;
+}

@@ -14,6 +14,10 @@ public class SprintBacklogItemDto {
     private Long id;
     private Long sprintId;
     private Long backlogItemId;
+    // Backlog item details included so frontend doesn't need a second request
+    private String backlogItemTitle;
+    private String backlogItemPriority;
+    private int backlogItemEffort;
     private int plannedEffort;
     private int actualEffort;
     private boolean locked;

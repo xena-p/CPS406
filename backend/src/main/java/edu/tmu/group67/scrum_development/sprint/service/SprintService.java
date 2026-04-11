@@ -2,122 +2,136 @@ package edu.tmu.group67.scrum_development.sprint.service;
 
 import org.springframework.stereotype.Service;
 
-import edu.tmu.group67.scrum_development.auth.model.entity.User;
-import edu.tmu.group67.scrum_development.auth.repository.UserRepository;
+import edu.tmu.group67.scrum_development.enums.Level;
 import edu.tmu.group67.scrum_development.enums.Status;
 import edu.tmu.group67.scrum_development.productbacklog.model.entity.BacklogItemEntity;
 import edu.tmu.group67.scrum_development.productbacklog.repository.BacklogItemRepository;
 import edu.tmu.group67.scrum_development.sprint.model.entity.SprintEntity;
 import edu.tmu.group67.scrum_development.sprint.repository.SprintRepository;
-import edu.tmu.group67.scrum_development.sprintbacklog.controller.SprintBacklogItemController;
 import edu.tmu.group67.scrum_development.sprintbacklog.model.entity.SprintBacklogItemEntity;
 import edu.tmu.group67.scrum_development.sprintbacklog.repository.SprintBacklogItemRepository;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
-import javax.management.RuntimeErrorException;
-
-//FXNS for sprint class
-//@Builder
 @Service
 @RequiredArgsConstructor
 public class SprintService {
     private final SprintRepository sprintRepository;
-    private final UserRepository userRepository;
     private final BacklogItemRepository backlogItemRepository;
     private final SprintBacklogItemRepository sprintBacklogRepository;
 
-    //createSprint (name, startDate, endDate)
-    public SprintEntity createSprint(@NonNull String name, LocalDateTime startDate, LocalDateTime endDate) {
-        SprintEntity newSprint= SprintEntity.builder()
-        .name(name)
-        .startDate(startDate)
-        .endDate(endDate)
-        .status(Status.IN_PROGRESS)
-        .isApproved(false)
-        .build();
+    // Creates a new sprint proposal with PLANNED status
+    public SprintEntity createSprint(@NonNull String name, LocalDateTime startDate, LocalDateTime endDate, int capacity) {
+        List<SprintEntity> activeSprints = sprintRepository.findByStatus(Status.ACTIVE);
+        if (!activeSprints.isEmpty()) {
+            throw new RuntimeException("A sprint is already active. Complete it before starting a new one.");
+        }
+
+        SprintEntity newSprint = SprintEntity.builder()
+                .name(name)
+                .startDate(startDate)
+                .endDate(endDate)
+                .status(Status.PLANNED)
+                .capacity(capacity)
+                .isApproved(false)
+                .build();
         return sprintRepository.save(newSprint);
     }
 
-    // helper for approveSprint sprint 
-    public void approveSprint (Long id){
-        SprintEntity sprint= sprintRepository.findById(id).get();
-        sprint.setApproved(true);
-        sprintRepository.save(sprint);
-    }
-    //processSprintProposal(customerId, status, comments) -locks all items if approved -c
-     public SprintEntity processSprintProposal(Long sprintId,Long customerId, boolean customerIN){
-         SprintEntity sprint=sprintRepository.findById(sprintId).orElseThrow(null);
-         User user=userRepository.findById(customerId).orElseThrow(null);
+    // Auto-selects highest-priority PLANNED items that fit within the sprint's capacity
+    public List<SprintBacklogItemEntity> generateSprintProposal(Long sprintId) {
+        SprintEntity sprint = sprintRepository.findById(sprintId)
+                .orElseThrow(() -> new RuntimeException("Sprint not found"));
 
-         sprint.setApproved(customerIN);
+        if (sprint.isApproved()) {
+            throw new RuntimeException("Cannot regenerate proposal for an approved sprint");
+        }
 
-         if (customerIN==true){
-            //find all backlog items + lock all backlog items
-            approveSprint(sprintId);
-            List<SprintBacklogItemEntity> sprintItems=sprintBacklogRepository.findBySprintId_Id(sprintId);
+        // Clear any previously generated items for this sprint
+        List<SprintBacklogItemEntity> existing = sprintBacklogRepository.findBySprintId_Id(sprintId);
+        sprintBacklogRepository.deleteAll(existing);
 
-            for(SprintBacklogItemEntity item : sprintItems){
-                item.setLocked(true);
+        // Fetch PLANNED items sorted by priority HIGH → MEDIUM → LOW
+        List<BacklogItemEntity> plannedItems = backlogItemRepository.findByStatus(Status.PLANNED)
+                .stream()
+                .sorted(Comparator.comparingInt(item -> priorityOrder(item.getPriority())))
+                .toList();
+
+        List<SprintBacklogItemEntity> proposalItems = new ArrayList<>();
+        int remainingCapacity = sprint.getCapacity();
+
+        for (BacklogItemEntity item : plannedItems) {
+            if (item.getEffort() <= remainingCapacity) {
+                proposalItems.add(SprintBacklogItemEntity.builder()
+                        .sprintId(sprint)
+                        .backlogItemId(item)
+                        .plannedEffort(item.getEffort())
+                        .actualEffort(0)
+                        .locked(false)
+                        .status(Status.PLANNED)
+                        .build());
+                remainingCapacity -= item.getEffort();
             }
+        }
 
-            sprintBacklogRepository.saveAll(sprintItems); 
-        }
-        return sprintRepository.save(sprint);
-    }   
-     //generateSprintProposal(capacity)
-    //modifySprintProposal(itemId, action) -action handles both add and remove
-
-    //submitSprintProposalForApproval()
-    public SprintEntity submitSprintProposalForApproval(Long id){
-        SprintEntity sprint=sprintRepository.findById(id).orElseThrow(null);
-        if (sprint.isApproved()){ // make sure -c and -d approve
-            throw new RuntimeErrorException(null);
-        }
-        else{
-            //which status deals with approvals?????
-            //sprint.isApproved();
-            return sprintRepository.save(sprint);
-        }
+        return sprintBacklogRepository.saveAll(proposalItems);
     }
 
+    // Customer rep approves or rejects a sprint proposal
+    public SprintEntity processSprintProposal(Long sprintId, boolean approved) {
+        SprintEntity sprint = sprintRepository.findById(sprintId)
+                .orElseThrow(() -> new RuntimeException("Sprint not found"));
 
-    //startSprint (sprintid) - changes status -official start
-    public SprintEntity startSprint (@NonNull Long id){
-        // check if sprint alr is real, if so, break
-        SprintEntity sprint=sprintRepository.findById(id).orElseThrow(null);
-        if (sprint.isApproved()){ // make sure -c and -d approve
-            throw new RuntimeErrorException(null);
+        if (approved) {
+            sprint.setApproved(true);
+            sprint.setStatus(Status.ACTIVE);
+            sprintRepository.save(sprint);
+
+            // Lock all sprint backlog items and set them to IN_PROGRESS
+            List<SprintBacklogItemEntity> items = sprintBacklogRepository.findBySprintId_Id(sprintId);
+            for (SprintBacklogItemEntity item : items) {
+                item.setLocked(true);
+                item.setStatus(Status.IN_PROGRESS);
+            }
+            sprintBacklogRepository.saveAll(items);
+        } else {
+            // Rejected — delete sprint backlog items then the sprint
+            List<SprintBacklogItemEntity> items = sprintBacklogRepository.findBySprintId_Id(sprintId);
+            sprintBacklogRepository.deleteAll(items);
+            sprintRepository.delete(sprint);
+            return null;
         }
-        else{
-            //adjust status...inprog?
-            sprint.setStatus(Status.IN_PROGRESS);
-            return sprintRepository.save(sprint);
-        }
+
+        return sprint;
     }
 
-        //completeSprint (sprintid) - changes status
-    public SprintEntity completeSprint (@NonNull Long id){
-        // check if sprint alr is real, if so, break
-        SprintEntity sprint=sprintRepository.findById(id).orElseThrow(null);
+    // Marks a sprint as complete
+    public SprintEntity completeSprint(@NonNull Long id) {
+        SprintEntity sprint = sprintRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Sprint not found"));
         sprint.setStatus(Status.DONE);
         return sprintRepository.save(sprint);
     }
 
-    // find by status -> see sprint repo. file
-    //getSprints(status) -use for get current/past (status) sprints
-    public List<SprintEntity> getSprints (Status status){
+    public List<SprintEntity> getSprints(Status status) {
         return sprintRepository.findByStatus(status);
     }
 
-    // list all sprints
-    public List<SprintEntity> getAllSprints (){
+    public List<SprintEntity> getAllSprints() {
         return sprintRepository.findAll();
     }
 
+    private int priorityOrder(Level priority) {
+        if (priority == null) return 99;
+        return switch (priority) {
+            case HIGH -> 0;
+            case MEDIUM -> 1;
+            case LOW -> 2;
+        };
+    }
 }
