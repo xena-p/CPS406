@@ -41,19 +41,40 @@ mvnw.cmd spring-boot:run
 ```
 ---
 # Running the project.
----
 
-In **command prompt** backend is up and running:
+In **command prompt**, ensure the backend is up and running:
 ```bash
 cd CPS406
 cd backend
 mvnw.cmd clean spring-boot:run
 ```
 
-Next, in front end run the following.
+Next, to view the webpage/frontend run the following.
 ```bash
 cd CPS406
 cd frontend
 npm run dev
 ```
-hold the CTRL key and click onto the local link
+- hold the CTRL key and click onto the local link
+
+# When demoing
+
+The project has 3 different user types; client, customer representative, and cilent. Here are the set logins for each user type.
+
+Developer account
+```
+username: dev@example.com
+password:dev123
+```
+
+Customer Representative account
+```
+username: rep@example.com
+password:rep123
+```
+
+Client account
+```
+username: client@example.com
+password:client123
+```
