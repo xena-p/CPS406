@@ -61,7 +61,7 @@ We want to parse the following information of the connection string. See example
 ```
 DB_URL: postgresql://ep-damp-art-am2q9s5x-pooler.c-5.us-east-1.aws.neon.tech/neondb?sslmode=require
 DB_USERNAME: neondb_owner
-DB_PASSWORD: The 16 character password(in photo is is hidden).
+DB_PASSWORD: The 16 character password(in photo it is hidden).
 ```
 ---
 **Now** in VS code, we are going to add an .env file.
